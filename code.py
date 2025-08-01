@@ -2,18 +2,24 @@ import board
 from odb.odb_firmware import Odb
 from odb.modules.mpu_6050 import Mpu6050
 from odb.modules.gps import Gps
-from odb.modules.nrf24 import Nfr24
+from odb.modules.nrf24 import Nrf24
 from odb.modules.servo import Servo
+from odb.modules.serialwriter import SerialWriter
+from odb.modules.orientation import Orientation
+
+from odb.extensions.firmware import odb_extended
 
 
 mpu = Mpu6050(board.GP27, board.GP26, 10000)
 gps = Gps(board.GP8, board.GP5,baudrate=9600, timeout=30, debug=False)
-nrf24 = Nfr24(board.GP15, board.GP1, board.GP2, board.GP3, board.GP4)
+nrf24 = Nrf24(board.GP15, board.GP1, board.GP2, board.GP3, board.GP4)
 servo = Servo()
-my_odb = Odb()
+orientation = Orientation()
+serialWriter = SerialWriter()
+my_odb = odb_extended()
 # Odb.modules = [mpu, test]
 # Odb.modules = [mpu, nrf24, gps]
-Odb.modules = [mpu, nrf24, servo]
+odb_extended.modules = [mpu, nrf24, servo, orientation, serialWriter]
 # Odb.modules = [nrf24]
 
 if __name__ == '__main__':
