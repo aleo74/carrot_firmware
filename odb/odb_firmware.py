@@ -13,7 +13,7 @@ class Odb:
         while not self.start:
             for x in self.modules:
                 try:
-                    # FIXME : Si le module GPS est pas reseigne en dernier, cette partie du code devient non fonctionnel
+                    # FIXME : Si le module GPS est pas renseigné en dernier, cette partie du code devient non fonctionnel
                     if not x.ready:
                         x.during_bootup()
                         if x.ready:
@@ -40,15 +40,24 @@ class Odb:
         data = {}
         for x in self.modules:
             dico = x.before_handle(data_from_module)
+            if dico is None:  # ← on ignore None
+                continue
             data[x.name] = dico
         return data
 
 
     def handle(self, data_received):
-        data = {}
+        data = dict(data_received)
+        module_names = {m.name for m in self.modules}
+
         for x in self.modules:
-            dico = x.handle(data_received)
-            data[x.name] =dico
+            dico = x.handle(data)
+            if dico is None or dico is data:
+                continue
+            data[x.name] = dico
+            if isinstance(dico, dict):
+                safe = {k: v for k, v in dico.items() if k not in module_names}
+                data.update(safe)
         return data
 
 
