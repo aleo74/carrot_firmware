@@ -10,10 +10,13 @@ class SerialWriter(Module):
 
 
     def before_handle(self, data=None):
-        return []
+        return None
+
+    def handle(self, data=None):
+        return None
 
 
     def after_handle(self, data=None):
         print(json.dumps(data))
-        return []
+        return None
 
